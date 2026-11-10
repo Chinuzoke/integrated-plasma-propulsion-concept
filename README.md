@@ -33,7 +33,67 @@ Rather than treating these disciplines as independent exercises, the project see
 | Performance modelling | MATLAB | Numerical analysis and propulsion performance |
 | System modelling | Simulink | System-level modelling and subsystem interaction |
 
-## 4. Repository Structure
+
+## 4. Integrated System Architecture
+
+The following diagram illustrates the intended architecture of the integrated propulsion investigation and the information flow between its computational and engineering subsystems.
+
+The individual models are developed and verified progressively, with subsystem coupling introduced as their governing equations, inputs and outputs are established.
+
+flowchart TD
+    A["Operating Conditions<br/>Laser Power • Propellant • Geometry"] 
+
+    subgraph PY["PYTHON — Computational Plasma and Laser Models"]
+        B["Laser Delivery Model"]
+        C["Optical Losses and Captured Laser Power"]
+        D["Laser-Sustained Plasma (LSP) Model"]
+        E["Plasma State<br/>Temperature • Density • Ionization<br/>Energy Deposition"]
+
+        B --> C
+        C -->|"Captured laser power"| D
+        D --> E
+    end
+
+    subgraph CAD["SOLIDWORKS — Thruster Engineering Design"]
+        F["3D Thruster Geometry"]
+        G["Component Arrangement<br/>Chamber • Nozzle • Optical Access"]
+        F --> G
+    end
+
+    subgraph ANSYS["ANSYS — Multiphysics Engineering Analysis"]
+        H["Geometry and Computational Mesh"]
+        I["Thermal / Fluid Analysis"]
+        J["Engineering Field Results"]
+        H --> I --> J
+    end
+
+    subgraph MATLAB["MATLAB — Propulsion Performance"]
+        K["Propulsion Performance Model"]
+        L["Thrust • Specific Impulse<br/>Mass Flow • Efficiency"]
+        K --> L
+    end
+
+    subgraph SIM["SIMULINK — System-Level Modelling"]
+        M["Integrated System Model"]
+        N["Operating Conditions and<br/>System Response"]
+        M --> N
+    end
+
+    A --> B
+    G --> H
+    E --> I
+    E --> K
+    J --> K
+    L --> M
+    N -.->|"Operating-condition updates"| A
+
+    V["Literature and Experimental Data<br/>Verification • Validation • Model Refinement"]
+    E -.-> V
+    J -.-> V
+    L -.-> V
+
+
+## 5. Repository Structure
 
 - `CAD-SolidWorks/` — Thruster geometry, components, assemblies, engineering drawings and renders.
 - `Python/` — Laser-delivery calculations, plasma models and supporting numerical modules.
@@ -43,7 +103,7 @@ Rather than treating these disciplines as independent exercises, the project see
 - `Documentation/` — Research methodology, equations, assumptions and technical documentation.
 - `Results/` — Simulation outputs, figures, comparisons and validation results.
 
-## 5. Current Development Status
+## 6. Current Development Status
 
 **SolidWorks CAD**
 - Preliminary three-dimensional thruster design and component arrangement established.
@@ -57,7 +117,7 @@ Rather than treating these disciplines as independent exercises, the project see
 **Other engineering and computational subsystems**
 - ANSYS, MATLAB and Simulink development to follow as the integrated modelling framework progresses.
 
-## 6. Research Methodology
+## 7. Research Methodology
 
 The project follows an iterative engineering-development approach:
 
@@ -70,13 +130,13 @@ The project follows an iterative engineering-development approach:
 7. Parameter studies and sensitivity analysis.
 8. Validation against published research and experimental evidence.
 
-## 7. Validation and Research Integrity
+## 8. Validation and Research Integrity
 
 Published experimental and numerical results will be used wherever appropriate to assess model accuracy.
 
 Assumptions, provisional parameters, numerical limitations and validation status will be documented. Predicted performance will be distinguished from experimentally demonstrated performance.
 
-## 8. Development Philosophy
+## 9. Development Philosophy
 
 The project is being developed progressively, with emphasis on physical consistency, numerical reliability, engineering feasibility and traceable research decisions.
 
