@@ -1,0 +1,199 @@
+================================================================================================
+LASER-DELIVERY MODEL FOR LSP THERMAL PROPULSION -- ENGINEERING REPORT
+================================================================================================
+
+SCOPE: transmitter -> vacuum propagation -> receiver aperture -> mirror -> beam-conditioning ->
+       fused-silica window -> LSP chamber entrance. No plasma, nozzle, thrust or trajectory modelling.
+
+PEAK-POWER REFERENCE SCENARIO: 30 kW is a peak-power value from the cited study; CW/average power and duty
+cycle are UNRESOLVED. Results below are NOT a claim of sustained 30 kW propulsion operation, and the
+selected components have NOT been validated as a complete propulsion laser system.
+
+1. INPUTS (SI) and provenance
+   transmitter_power                              30000.0 W       [PUBLISHED_LITERATURE / PROVISIONAL]
+      - PEAK-power reference scenario (30 kW Yb-doped fibre laser, MacRobbie et al. 2025). The source does not establish CW operation or that this is the continuous output. NOT a claim of sustained 30 kW operation.
+   cw_average_optical_power                    UNRESOLVED W       [UNRESOLVED / recorded, not used]
+      - continuous-wave / average optical power
+   duty_cycle                                  UNRESOLVED -       [UNRESOLVED]
+      - duty cycle; if supplied, an average-power line is reported
+   wavelength                                   1.064e-06 m       [PUBLISHED_LITERATURE / PROVISIONAL]
+      - representative Yb-fibre laser wavelength
+   beam_waist_radius                                 0.25 m       [PUBLISHED_LITERATURE / PROVISIONAL]
+      - 250 mm per the cited study; 1/e^2 intensity radius
+   m_squared                                         11.8 -       [UNVERIFIED]
+      - NO SOURCE established. Retained only as an assumed sensitivity-case input; assumed a second-moment value, equal in x and y. Replace when a source is identified.
+   distance                                     1200000.0 m       [ASSUMED_MODELLING_CHOICE]
+      - selected 1,200 km test distance; NOT an operating distance from the cited study
+   receiver_radius                                    5.0 m       [ASSUMED_MODELLING_CHOICE]
+      - 10 m diameter; NOT a receiver specification from the cited study; hard-edged, unobstructed, centred
+   pointing_error                                     0.1 arcsec  [UNVERIFIED]
+      - illustrative scenario only (no source); treated as a fixed offset; see pointing sweep and jitter variant
+   propagation_medium                              vacuum -       [ASSUMED_MODELLING_CHOICE / recorded, not used]
+      - initial line-of-sight simplification. Atmospheric extinction/turbulence excluded. This does NOT imply that pointing jitter, wavefront error or other disturbances are negligible
+   propagation_loss_fraction                          0.0 -       [ASSUMED_MODELLING_CHOICE]
+      - vacuum: zero. Hook for future medium attenuation
+   optical_component_wavelength                 1.064e-06 m       [MANUFACTURER_SPECIFICATION / recorded, not used]
+      - operating wavelength stated for the mirror, expander and window datasheets
+   mirror_aoi_deg                                    45.0 deg     [MANUFACTURER_SPECIFICATION / recorded, not used]
+      - catalogue part is specified at 45 deg AOI; a spacecraft receiving mirror need not operate there. Angle/polarisation dependence is not modelled
+   mirror_reflectance                               0.998 -       [MANUFACTURER_SPECIFICATION]
+      - GUARANTEED > 99.8 %; 0.998 used as the conservative baseline
+   mirror_typical_reflectance                      0.9998 -       [PROVISIONAL_MANUFACTURER_MEASUREMENT / PROVISIONAL]
+      - typical measured > 99.98 %; alternative scenario only, not the guaranteed baseline
+   mirror_typical_abs_scatter_ppm                   150.0 ppm     [PROVISIONAL_MANUFACTURER_MEASUREMENT / PROVISIONAL]
+      - typical measured COMBINED absorption+scatter < 150 ppm (an upper bound); not separately specified
+   mirror_absorption_fraction                  UNRESOLVED -       [UNRESOLVED]
+      - individual absorption not specified
+   mirror_scatter_fraction                     UNRESOLVED -       [UNRESOLVED]
+      - individual scattering not specified
+   expander_expansion_ratio                           8.0 -       [MANUFACTURER_SPECIFICATION / recorded, not used]
+      - 8x. Recorded only: the power budget has no input-beam diameter, and clear-aperture clipping and beam-size matching to the receiver are not modelled
+   expander_material               AR-coated fused silica -       [MANUFACTURER_SPECIFICATION / recorded, not used]
+   expander_arrangement                          Galilean -       [MANUFACTURER_SPECIFICATION / recorded, not used]
+   expander_num_lenses                                  2 -       [DESIGN_DERIVED / recorded, not used]
+      - conventional Galilean two-lens architecture; not a published internal prescription
+   expander_num_surfaces                                4 -       [DESIGN_DERIVED / recorded, not used]
+      - two lenses x two surfaces; not a published internal prescription
+   conditioning_transmission                         0.96 -       [MANUFACTURER_SPECIFICATION]
+      - stated > 96 % for the assembly; 0.960 used as the conservative baseline; assembly-level total
+   expander_surface_losses                     UNRESOLVED -       [UNRESOLVED]
+      - per-surface reflection/absorption/scatter unavailable; the 4 % is NOT split among the surfaces
+   window_material                       synthetic quartz -       [MANUFACTURER_SPECIFICATION / recorded, not used]
+   window_incidence_deg                               0.0 deg     [MANUFACTURER_SPECIFICATION / recorded, not used]
+      - normal incidence
+   window_transmission                              0.996 -       [MANUFACTURER_SPECIFICATION]
+      - at least 99.6 %. Shimadzu calculates it from the single-sided reflectance
+   window_single_sided_reflectance                  0.002 -       [MANUFACTURER_SPECIFICATION / recorded, not used]
+      - < 0.2 % per side. Basis of the transmission figure: NOT added as an extra loss
+   window_absorption_coefficient               UNRESOLVED 1/m     [UNRESOLVED]
+      - bulk absorption
+   window_scattering                           UNRESOLVED -       [UNRESOLVED]
+      - scattering
+   window_thickness                            UNRESOLVED m       [UNRESOLVED]
+      - actual window thickness for this spacecraft
+   window_mode                                  catalogue -       [ASSUMED_MODELLING_CHOICE]
+      - 'catalogue' (use the specified total T) or 'uncoated_fresnel' (comparison case only: the representative Shimadzu window is AR-coated)
+
+2. BEAM AT THE RECEIVER PLANE (Gaussian, M^2-corrected)
+   Rayleigh range            z_R      =     15638.90 m   (z/z_R = 76.73; far field: True)
+   Far-field half-divergence theta    =       15.986 urad
+   Beam radius (1/e^2)       w        =       19.185 m
+   Beam diameter             2w       =       38.369 m
+   On-axis intensity         I0       =       51.892 W/m^2
+
+3. POINTING AND RECEIVER CAPTURE
+   Pointing error                     = 0.1 arcsec = 4.8481e-07 rad
+   Lateral displacement      d        =       0.5818 m
+   Aperture radius           a        =        5.000 m   (a/w = 0.2606)
+   Captured power                     =     3804.309 W
+   Capture efficiency                 =      12.6810 %
+   Power missed by receiver           =    26195.691 W
+   (centred-beam analytic efficiency  =      12.7028 %; pointing costs 0.0218 percentage points)
+   Numerical evidence: |eta(64 nodes) - eta(32 nodes)| = 2.78e-17;  |radial - independent 2-D polar| = 2.78e-17
+   INFORMATIONAL alternative: if 0.1 arcsec were RMS jitter PER AXIS (not a fixed offset),
+   mean capture efficiency = 12.6593 %  (fixed-offset assumption is the baseline).
+
+4. POWER-FLOW TABLE
+Stage                              P_in [W]    P_out [W]    Loss [W]  Loss/stage in [%] Cum. eff. [%]
+-----------------------------------------------------------------------------------------------------
+Transmitter                       30000.000    30000.000       0.000             0.0000      100.0000
+Free-space propagation            30000.000    30000.000       0.000             0.0000      100.0000
+Receiver aperture capture         30000.000     3804.309   26195.691            87.3190       12.6810
+Receiving mirror                   3804.309     3796.700       7.609             0.2000       12.6557
+Beam-conditioning assembly         3796.700     3644.832     151.868             4.0000       12.1494
+Fused-silica window                3644.832     3630.253      14.579             0.4000       12.1008
+
+5. CHANNEL DETAIL (what is modelled vs what is unavailable)
+[Free-space propagation]  basis: vacuum: zero by assumption (no medium model)
+    modelled channel   propagation attenuation                             0.0000 W
+[Receiver aperture capture]  basis: numerical 2-D Gaussian integral over the circular aperture
+    modelled channel   missed (outside aperture)                       26195.6911 W
+    note: displacement 0.5818 m, beam radius 19.185 m
+[Receiving mirror]  basis: GUARANTEED manufacturer specification (> 99.8 %), used as conservative baseline
+    COMBINED loss      (split unavailable)                                 7.6086 W
+        -> absorption, scattering and any transmission combined; individual split UNRESOLVED
+    note: representative part: catalogue dielectric mirror specified at 45 deg AOI; its applicability to a large spacecraft receiving mirror, and angle/polarisation dependence, are not established
+[Beam-conditioning assembly]  basis: manufacturer specification (> 96 %), 0.960 used as conservative assembly-level total
+    COMBINED loss      (split unavailable)                               151.8680 W
+        -> reflection, absorption, scatter combined; per-surface split UNRESOLVED
+    note: representative: 8x Galilean expander; design-derived 2 lenses / 4 surfaces (not a published prescription)
+    note: loss NOT divided among surfaces; assembly total used once (no double counting)
+    note: beam-size change (x8) and clear-aperture matching are not modelled in this power budget
+[Fused-silica window]  basis: manufacturer specification (at least 99.6 %)
+    COMBINED loss      (split unavailable)                                14.5793 W
+        -> total loss combined; bulk absorption and scattering UNRESOLVED
+    note: manufacturer derives T from single-sided reflectance (< 0.2 %): that reflectance is the basis of the total and is NOT added as an extra loss
+
+6. FINAL POWER-BUDGET SUMMARY
+   Transmitter PEAK optical power     =    30000.000 W (reference scenario)
+   Delivered to LSP chamber entrance  =     3630.253 W (peak-power scenario)
+   Total power lost                   =    26369.747 W
+   Overall laser-delivery efficiency  =      12.1008 %
+   Average delivered power            : not computed (duty cycle UNRESOLVED)
+   of which: missed by receiver 87.32 % of P_tx; optical train 0.580 % of P_tx
+   NOTE: baseline optical values are guaranteed manufacturer specifications for representative catalogue parts,
+   used as conservative figures. They are not measured performance of an assembled spacecraft system.
+
+6b. ALTERNATIVE SCENARIOS (reference scenario baseline_v1 is unchanged)
+   baseline_v1                  delivered   3630.253 W  (12.1008 %)   Reference scenario: guaranteed manufacturer specifications (mirror 0.998, conditioning 0.960, window 0.996), unverified M^2 and pointing as in config.PARAMS
+   typical_mirror               delivered   3636.801 W  (12.1227 %)   Mirror at TYPICAL measured performance (R = 0.9998, combined abs+scatter <= 150 ppm, PROVISIONAL manufacturer measurement); other components unchanged
+   uncoated_window_comparison   delivered   3407.242 W  (11.3575 %)   COMPARISON ONLY: uncoated fused-silica Fresnel window (the representative Shimadzu window is AR-coated); bulk absorption/scatter not included
+   POINTING sensitivity cases (pointing has NO established source; values are not specifications):
+        arcsec     d [m]   capture [%]   delivered [W]
+         0.000     0.000       12.7028        3636.492
+         0.010     0.058       12.7026        3636.430
+         0.050     0.291       12.6974        3634.931
+         0.100     0.582       12.6810        3630.253
+         0.300     1.745       12.5080        3580.724
+         1.000     5.818       10.6983        3062.654
+         3.000    17.453        2.7034         773.909
+        10.000    58.178        0.0000           0.000
+   M^2 sensitivity cases (M^2 has NO established source; 11.8 is an assumed case):
+           M^2     w [m]   capture [%]   delivered [W]
+          1.00     1.645      100.0000       28627.427
+          3.00     4.883       86.9813       24900.515
+          5.00     8.132       52.6863       15082.734
+         11.80    19.185       12.6810        3630.253
+         20.00    32.514        4.6165        1321.599
+
+7. SENSITIVITY (see uncertainty.py: ranges are ILLUSTRATIVE, not measured uncertainties)
+   Local elasticity d ln P_del / d ln x at baseline:
+      Receiver aperture radius            +1.867
+      Propagation distance                -1.867
+      Wavelength                          -1.864
+      M^2                                 -1.864
+      Beam waist radius                   +1.863
+      Beam-conditioning transmission      +1.000
+      Window transmission                 +1.000
+      Mirror reflectance                  +1.000
+      Transmitter power                   +1.000
+      Pointing error                      -0.003
+   One-at-a-time sweep over illustrative ranges (largest swing first):
+      Propagation distance               [1.08e+06, 1.32e+06] -> P_del    4412.7 ..    3035.1 W  (swing   1377.6 W)
+      M^2                                [10.62, 12.98] -> P_del    4410.9 ..    3036.0 W  (swing   1375.0 W)
+      Receiver aperture radius           [4.5, 5.5] -> P_del    2977.8 ..    4332.0 W  (swing   1354.2 W)
+      Beam waist radius                  [0.225, 0.275] -> P_del    2979.0 ..    4330.2 W  (swing   1351.2 W)
+      Transmitter power                  [27000, 33000] -> P_del    3267.2 ..    3993.3 W  (swing    726.1 W)
+      Beam-conditioning transmission     [0.93, 0.98] -> P_del    3516.8 ..    3705.9 W  (swing    189.1 W)
+      Pointing error                     [0.05, 0.3] -> P_del    3634.9 ..    3580.7 W  (swing     54.2 W)
+      Window transmission                [0.99, 0.998] -> P_del    3608.4 ..    3637.5 W  (swing     29.2 W)
+      Wavelength                         [1.063e-06, 1.065e-06] -> P_del    3636.6 ..    3623.9 W  (swing     12.7 W)
+      Mirror reflectance                 [0.998, 0.9998] -> P_del    3630.3 ..    3636.8 W  (swing      6.5 W)
+   Monte Carlo (N=2000, seed=12345, uniform over illustrative ranges): mean 3658 W, std 808 W, 5-95 % [2477, 5112] W
+   Spearman rank correlation with P_del: Receiver aperture radius +0.49, Propagation distance -0.47, M^2 -0.46, Beam waist radius +0.45, Transmitter power +0.25
+   Parameter uncertainty is partly explored above; MODEL-FORM uncertainty (Gaussian profile for M^2=11.8,
+   scalar M^2, fixed-offset pointing, no jitter/aberration/obscuration) is NOT quantified.
+
+8. VERIFICATION STATUS
+   34/34 checks passed
+   [math] 16/16 passed
+   [consistency] 14/14 passed
+   [literature] 2/2 passed
+   [inputs] 2/2 passed
+   Verified mathematically : equation implementation, quadrature convergence, energy conservation.
+   Checked vs literature   : only a spot-check of fused-silica index (limited; see references.py).
+   NOT validated           : no experimental/flight data. Gaussian-profile assumption, catalogue optical
+                             values, pointing model and all unresolved inputs require validation.
+
+9. UNRESOLVED INPUTS: cw_average_optical_power, duty_cycle, mirror_absorption_fraction, mirror_scatter_fraction, expander_surface_losses, window_absorption_coefficient, window_scattering, window_thickness
+================================================================================================
