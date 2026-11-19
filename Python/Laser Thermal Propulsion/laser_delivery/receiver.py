@@ -39,7 +39,7 @@ import numpy as np
 from scipy.special import i0e
 from scipy.stats import ncx2
 
-import config as cfg
+from . import config as cfg
 
 
 # ------------------------------------------------------------------ quadrature
@@ -67,7 +67,8 @@ def capture_fraction_radial(a: float, w: float, d: float = 0.0,
     """Production method: 1-D radial Gauss-Legendre with analytic angular integral."""
     _check(a, w, d)
     r, wr = _gl_panels(a, n_panels, n_nodes)
-    integrand = (4.0 / w**2) * r * np.exp(-2.0 * (r - d) ** 2 / w**2) * i0e(4.0 * r * d / w**2)
+    integrand = (4.0 / w**2) * r * np.exp(-2.0 * (r - d)
+                                          ** 2 / w**2) * i0e(4.0 * r * d / w**2)
     return float(np.sum(wr * integrand))
 
 
@@ -78,7 +79,8 @@ def capture_fraction_polar(a: float, w: float, d: float = 0.0,
     r, wr = _gl_panels(a, n_panels, n_nodes)
     phi = np.arange(n_phi) * (2.0 * math.pi / n_phi)
     R, PHI = np.meshgrid(r, phi, indexing="ij")
-    inten = (2.0 / (math.pi * w**2)) * np.exp(-2.0 * (R**2 + d**2 - 2.0 * R * d * np.cos(PHI)) / w**2)
+    inten = (2.0 / (math.pi * w**2)) * np.exp(-2.0 *
+                                              (R**2 + d**2 - 2.0 * R * d * np.cos(PHI)) / w**2)
     return float(np.sum(wr[:, None] * R * inten) * (2.0 * math.pi / n_phi))
 
 
@@ -108,7 +110,8 @@ class CaptureResult:
     displacement_m: float
     beam_radius_m: float
     aperture_radius_m: float
-    quadrature_self_error: float   # |eta(N) - eta(N/2 nodes)|: numerical convergence evidence
+    # |eta(N) - eta(N/2 nodes)|: numerical convergence evidence
+    quadrature_self_error: float
     method_discrepancy: float      # |radial - 2-D polar|: independent-method agreement
 
 
@@ -120,10 +123,12 @@ def capture_power(p_in_w: float, w: float, a: float, d: float = 0.0,
     n_nodes = n_nodes or cfg.NUMERICS["n_nodes"]
     n_phi = n_phi or cfg.NUMERICS["n_phi"]
     eta = capture_fraction_radial(a, w, d, n_panels, n_nodes)
-    eta_coarse = capture_fraction_radial(a, w, d, n_panels, max(2, n_nodes // 2))
+    eta_coarse = capture_fraction_radial(
+        a, w, d, n_panels, max(2, n_nodes // 2))
     eta_polar = capture_fraction_polar(a, w, d, n_panels, n_nodes, n_phi)
     if not (-1e-12 <= eta <= 1.0 + 1e-9):
-        raise ArithmeticError(f"capture fraction out of physical bounds: {eta}")
+        raise ArithmeticError(
+            f"capture fraction out of physical bounds: {eta}")
     eta = min(max(eta, 0.0), 1.0)  # remove round-off only (checked above)
     return CaptureResult(
         p_incident_w=p_in_w,

@@ -1,0 +1,168 @@
+====================================================================================================
+INTEGRATED LASER-DELIVERY + LSP REPORT
+====================================================================================================
+
+The delivery subsystem decides how much optical power reaches the LSP chamber; the LSP subsystem decides what
+the plasma does with it. Delivered power is NOT assumed to be absorbed.
+
+A. POWER CHAIN
+   stage                                                          power [W]  subsystem
+   Transmitter optical power (peak, reference scenario)           30000.000  delivery
+   After free-space propagation                                   30000.000  delivery
+   Captured by receiver aperture                                   3804.309  delivery
+   After receiving mirror                                          3796.700  delivery
+   After beam-conditioning assembly                                3644.832  delivery
+   DELIVERED to LSP chamber entrance (after window)                3630.253  delivery
+   Absorbed by the plasma (inverse bremsstrahlung)                 1368.267  LSP
+   Residual laser beam leaving the plasma                          2261.986  LSP
+     plasma energy sink: optically thin radiation                  1303.979  LSP
+     plasma energy sink: radial/wall loss (closure)                  64.288  LSP
+     plasma energy sink: gas enthalpy flux increase                   0.000  LSP
+
+   Laser-delivery efficiency (delivered / transmitter peak)  = 12.1008 %
+   Plasma absorption efficiency (absorbed / delivered)       = 37.6907 %
+   End-to-end absorbed / transmitter peak                    = 4.5609 %
+   Laser power basis: PEAK-power reference scenario (30 kW peak; CW/average power and duty cycle unresolved)
+
+B. INTERFACE CHECKS
+   [PASS] LSP input power equals the delivery subsystem's delivered power exactly  (3630.252958731898 W vs 3630.252958731898 W)
+   [PASS] LSP input is NOT the transmitter power nor the receiver-captured power  (P_tx=30000.0, captured=3804.3, delivered=3630.3 W)
+   [PASS] wavelength passed in metres and identical to the delivery wavelength  (1.0640e-06 m)
+   [PASS] laser power passed in watts, consistent with delivery units (W)
+   [PASS] optical losses not applied twice: LSP beam power balance starts from the delivered power
+   [PASS] plasma absorption kept separate from optical transmission (absorbed + residual = delivered)  (absorption efficiency 0.3769 is an LSP result; delivery efficiency 0.1210 is a delivery result)
+   [PASS] LSP energy balance consistent at the chamber boundary  (relative residual 1.2e-11; converged=True)
+
+C. LSP SUBSYSTEM RESULT
+====================================================================================================
+LSP SUBSYSTEM REPORT (integrated run)
+====================================================================================================
+
+SCOPE: 1-D axial, steady-state, LTE argon plasma heated by an inverse-bremsstrahlung-absorbed laser beam. Ends at the LSP
+outlet state. No nozzle, thrust, specific-impulse or trajectory calculation.
+
+1. INPUTS AND PROVENANCE
+   laser.power_w                             3630.252958731898 W        [FROM_LASER_DELIVERY]
+        - source: laser-delivery subsystem (power_budget.compute_budget); basis: PEAK-power reference scenario (30 kW peak; CW/average power and duty cycle unresolved)
+   laser.wavelength_m                               1.064e-06 m        [FROM_LASER_DELIVERY]
+        - laser-delivery subsystem (power_budget.compute_budget)
+   laser.m2                                              11.8 -        [FROM_LASER_DELIVERY]
+        - UNVERIFIED in the delivery register; used only for the collimation check
+   pressure_pa                                     10000000.0 Pa       [ORIGINAL_MODEL_DEFAULT]
+        - illustrative; NOT an experimental condition
+   mdot_kg_s                                            1e-06 kg/s     [ORIGINAL_MODEL_DEFAULT]
+        - illustrative; flow rate unspecified by any source here
+   plasma_radius_m                                     0.0005 m        [ORIGINAL_MODEL_DEFAULT]
+        - = channel = beam radius (top-hat, 1-D)
+   length_m                                              0.02 m        [ORIGINAL_MODEL_DEFAULT]
+        - chamber/absorption length unspecified by any source
+   T_inlet_K                                            500.0 K        [ORIGINAL_MODEL_DEFAULT]
+        - inlet gas temperature
+   T_wall_K                                             500.0 K        [ORIGINAL_MODEL_DEFAULT]
+        - containment wall temperature
+   physics                                      reconstructed -        [MODELLING_ASSUMPTION]
+        - reconstructed enthalpy/Kirchhoff physics vs legacy-equivalent
+   wall_closure                                     kirchhoff -        [MODELLING_ASSUMPTION]
+        - radial-loss closure for the 1-D model
+   gaunt_ff                                               1.0 -        [MODELLING_ASSUMPTION]
+        - IB Gaunt factor
+   gaunt_brems                                            1.2 -        [MODELLING_ASSUMPTION]
+        - brems Gaunt factor (Rybicki & Lightman ~1.2)
+   k_multiplier                                           1.0 -        [MODELLING_ASSUMPTION]
+        - brackets the omitted reactive+electron conductivity
+   n_cells                                                200 -        [NUMERICAL_SETTING]
+        - finite-volume cells
+   e-Ar momentum-transfer cross-section            unresolved m^2      [UNRESOLVED]
+        - needed for e-neutral IB and electron conductivity
+   net emission coefficient table                  unresolved W/m^3/sr [UNRESOLVED]
+        - line + recombination radiation
+   reactive + electron thermal conductivity        unresolved W/m/K    [UNRESOLVED]
+        - sourced table needed
+   laser focusing / beam profile in chamber        unresolved -        [UNRESOLVED]
+        - 1-D top-hat assumed; focusing optics not modelled
+   two-temperature (T_e != T_heavy) data           unresolved -        [UNRESOLVED]
+        - LTE assumed
+
+2. SOLUTION STATUS
+   seed 'hot': converged=True  iterations=179  rel. residual=4.83e-11  energy-balance residual=1.20e-11  Tpeak=19521 K  -> ignited
+   seed 'cold': converged=True  iterations=1  rel. residual=1.10e-155  energy-balance residual=1.10e-155  Tpeak=500 K  -> cold
+   PRIMARY (reported) result: seed 'hot' -> IGNITED (HOT) BRANCH
+   convergence reason: converged (residual and global balance below tolerance)
+   (convergence is judged on the governing-equation residual and global energy balance, not on peak temperature)
+
+3. LASER POWER AND ENERGY ACCOUNTING (laser optical balance is separate from the plasma thermal balance)
+   Laser power entering the chamber (P_in)        =     3630.253 W
+   Absorbed by the plasma (P_abs)                 =     1368.267 W   (absorption efficiency 37.691 %)
+   Residual laser beam leaving (P_res)            =     2261.986 W
+   beam balance P_in - P_abs - P_res              =    0.000e+00 W
+   Optically thin bremsstrahlung loss (P_rad)     =     1303.979 W
+   Radial/wall loss, closure-dependent (P_wall)   =       64.288 W
+   Gas enthalpy-flux increase mdot (h_out - h_in) =        0.000 W
+   Plasma energy-balance residual                 =   -4.369e-08 W  (1.20e-11 of P_in)
+
+4. PLASMA STATE
+   Peak plasma temperature                        =      19521.1 K   (outlet 500.1 K)
+   Peak electron density                          =   1.0455e+25 m^-3
+   Peak ionisation fraction (n_e / n_heavy)       =       0.3923
+   Axial profile (every 20th cell):
+        x [mm]     T [K]   n_e [m^-3]  ion frac  alpha [1/m]     I/I0  q_laser [W/m^3]
+          0.05   18961.2    9.632e+24    0.3372    5.672e+02   1.0000        2.549e+12
+          2.05    7759.5    1.036e+22    0.0001    1.660e-03   0.6231        4.780e+06
+          4.05    1392.4    2.673e-02    0.0000    3.161e-50   0.6231        0.000e+00
+          6.05     712.5    1.361e-29    0.0000   1.145e-104   0.6231        0.000e+00
+          8.05     560.6    1.011e-44    0.0000   7.121e-135   0.6231        0.000e+00
+         10.05     518.2    1.602e-50    0.0000   1.861e-146   0.6231        0.000e+00
+         12.05     505.6    1.929e-52    0.0000   2.733e-150   0.6231        0.000e+00
+         14.05     501.7    4.801e-53    0.0000   1.698e-151   0.6231        0.000e+00
+         16.05     500.5    3.120e-53    0.0000   7.183e-152   0.6231        0.000e+00
+         18.05     500.2    2.732e-53    0.0000   5.509e-152   0.6231        0.000e+00
+
+5. HAND-OFF STATE (for a future nozzle stage; nothing downstream is computed)
+   mdot = 1.000e-06 kg/s, p = 1.000e+07 Pa, T_out = 500.1 K, h_out = 2.6019e+05 J/kg (inlet 2.6017e+05), ionisation fraction at outlet 0.0000
+   gas enthalpy-flux increase = 0.000 W; converged=True; ignited=True
+   NOTE: mixed-mean outlet state NOT computed: the 1-D plug model has no radial structure
+
+6. WARNINGS AND KNOWN LIMITATIONS FOR THIS RESULT
+   - conductivity uses the Neufeld Omega22* fit beyond its stated range (T > ~9,300 K): extrapolation
+   - LTE (Saha) assumed; one temperature for electrons and heavy particles is NOT validated here
+   - beam Rayleigh range 0.0626 m is < 10x chamber length: collimated top-hat assumption inconsistent with M^2
+   - the ignited plasma is ATTACHED TO THE INLET BOUNDARY (hottest cell at x = 0): in a uniform collimated beam the intensity is highest at the entrance, nothing anchors the plasma inside the chamber, and the solution depends on the inlet (total-flux) boundary condition. A focused beam (not modelled) is what normally locates the plasma.
+   - 1-D collimated top-hat beam; no focusing, no radial structure (Jeng & Keefer 1987: 1-D LSP models are inherently limited)
+   - radiation = optically thin bremsstrahlung only (line/recombination omitted: loss underestimated)
+   - thermal conductivity omits reactive and electron contributions (conduction underestimated)
+   - operating inputs (p, mdot, R, L, T_in, T_wall) are ORIGINAL_MODEL_DEFAULT/illustrative, not experimental conditions
+
+7. VERIFICATION STATUS
+   35/35 verification checks passed
+   [math] 13/13
+   [consistency] 13/13
+   [literature] 2/2
+   [audit] 3/3
+   [inputs] 4/4
+   Verified (numerical/analytic): equation implementation, Jacobian, convergence, conservation.
+   NOT validated experimentally: LTE closure, 1-D collimated geometry, transport/radiation closures, absorption (e-ion only).
+====================================================================================================
+
+LASER-DELIVERY VERIFICATION: 34/34 checks passed (delivery subsystem unchanged)
+
+EXPLORATORY SCAN at the delivered power (hot-seed solve; NOT a design study; 1-D collimated model):
+ R[mm]  p[MPa] mdot[mg/s]  branch                     Tpeak[K]  abs[%]  Prad[W] Pwall[W]   dH[W]
+------------------------------------------------------------------------------------------------
+  2.00    1.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  2.00    1.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  2.00    3.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  2.00    3.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  2.00   10.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  2.00   10.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  1.00    1.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  1.00    1.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  1.00    3.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  1.00    3.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  1.00   10.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  1.00   10.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  0.50    1.00      0.100  cold (non-ignited) branch       500    0.00        0        0     0.0
+  0.50    1.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  0.50    3.00      0.100  ignited (hot) branch          19236   12.12      380       60     0.0
+  0.50    3.00      1.000  cold (non-ignited) branch       500    0.00        0        0     0.0
+  0.50   10.00      0.100  ignited (hot) branch          19934   32.12     1125       41     0.0
+  0.50   10.00      1.000  ignited (hot) branch          19308   37.70     1304       64     0.0

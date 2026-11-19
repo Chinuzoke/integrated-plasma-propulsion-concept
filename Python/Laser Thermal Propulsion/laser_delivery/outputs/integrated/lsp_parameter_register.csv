@@ -1,0 +1,21 @@
+parameter,value,unit,provenance,note
+laser.power_w,3630.252958731898,W,FROM_LASER_DELIVERY,source: laser-delivery subsystem (power_budget.compute_budget); basis: PEAK-power reference scenario (30 kW peak; CW/average power and duty cycle unresolved)
+laser.wavelength_m,1.064e-06,m,FROM_LASER_DELIVERY,laser-delivery subsystem (power_budget.compute_budget)
+laser.m2,11.8,-,FROM_LASER_DELIVERY,UNVERIFIED in the delivery register; used only for the collimation check
+pressure_pa,100000.0,Pa,ORIGINAL_MODEL_DEFAULT,illustrative; NOT an experimental condition
+mdot_kg_s,5e-05,kg/s,ORIGINAL_MODEL_DEFAULT,illustrative; flow rate unspecified by any source here
+plasma_radius_m,0.002,m,ORIGINAL_MODEL_DEFAULT,"= channel = beam radius (top-hat, 1-D)"
+length_m,0.02,m,ORIGINAL_MODEL_DEFAULT,chamber/absorption length unspecified by any source
+T_inlet_K,500.0,K,ORIGINAL_MODEL_DEFAULT,inlet gas temperature
+T_wall_K,500.0,K,ORIGINAL_MODEL_DEFAULT,containment wall temperature
+physics,reconstructed,-,MODELLING_ASSUMPTION,reconstructed enthalpy/Kirchhoff physics vs legacy-equivalent
+wall_closure,kirchhoff,-,MODELLING_ASSUMPTION,radial-loss closure for the 1-D model
+gaunt_ff,1.0,-,MODELLING_ASSUMPTION,IB Gaunt factor
+gaunt_brems,1.2,-,MODELLING_ASSUMPTION,brems Gaunt factor (Rybicki & Lightman ~1.2)
+k_multiplier,1.0,-,MODELLING_ASSUMPTION,brackets the omitted reactive+electron conductivity
+n_cells,200,-,NUMERICAL_SETTING,finite-volume cells
+e-Ar momentum-transfer cross-section,unresolved,m^2,UNRESOLVED,needed for e-neutral IB and electron conductivity
+net emission coefficient table,unresolved,W/m^3/sr,UNRESOLVED,line + recombination radiation
+reactive + electron thermal conductivity,unresolved,W/m/K,UNRESOLVED,sourced table needed
+laser focusing / beam profile in chamber,unresolved,-,UNRESOLVED,1-D top-hat assumed; focusing optics not modelled
+two-temperature (T_e != T_heavy) data,unresolved,-,UNRESOLVED,LTE assumed

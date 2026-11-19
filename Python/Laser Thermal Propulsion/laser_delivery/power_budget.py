@@ -3,18 +3,18 @@ power_budget.py -- complete series power accounting, transmitter -> LSP chamber 
 
 Stages: transmitter -> vacuum propagation -> receiver aperture capture ->
 receiving mirror -> beam-conditioning assembly -> fused-silica window ->
-(delivered to LSP chamber entrance). Ends there.
+(delivered to LSP chamber entrance). Ends there: no plasma/nozzle/thrust.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-import beam_propagation as bp
-import pointing_error as pe
-import receiver as rx
-from config import SystemInputs
-from optical_components import StageResult
-from optical_losses import assert_conserved, build_train, run_train
+from . import beam_propagation as bp
+from . import pointing_error as pe
+from . import receiver as rx
+from .config import SystemInputs
+from .optical_components import StageResult
+from .optical_losses import assert_conserved, build_train, run_train
 
 
 @dataclass(frozen=True)

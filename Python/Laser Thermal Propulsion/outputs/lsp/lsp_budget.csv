@@ -1,0 +1,16 @@
+quantity,value,unit
+P_in,999.9999999999999,W
+P_abs,0.0,W
+P_res,999.9999999999999,W
+P_rad,6.376129363820786e-153,W
+P_wall,7.813239515287418e-12,W
+dH,5.040972610004246e-10,W
+absorption_efficiency,0.0,-
+peak_T,500.0000000193761,K
+outlet_T,500.0000000193761,K
+peak_n_e,2.575332224406485e-54,m^-3
+peak_ion_fraction,1.7778149302161888e-79,-
+energy_balance_residual_W,-5.119105005157121e-10,W
+beam_balance_residual_W,0.0,W
+classification,cold (non-ignited) branch,
+converged,True,

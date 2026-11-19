@@ -14,7 +14,7 @@ A component is modelled at the finest level for which INDEPENDENT data exist.
   Fresnel interfaces with incoherent multiple reflection plus optional bulk
   absorption exp(-alpha t). Scattering is not modelled (no data).
 
-Catalogue values are specifications for the project model, NOT measured
+Catalogue values are specifications from the project brief, NOT measured
 performance of the assembled system.
 
 Fresnel / window equations (normal incidence, incoherent, no scatter):
@@ -34,7 +34,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 
-import config as cfg
+from . import config as cfg
 
 
 @dataclass(frozen=True)

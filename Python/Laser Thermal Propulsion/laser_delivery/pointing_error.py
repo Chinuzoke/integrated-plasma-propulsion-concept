@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import math
 
-import config as cfg
+from . import config as cfg
 
 
 def arcsec_to_rad(arcsec: float) -> float:

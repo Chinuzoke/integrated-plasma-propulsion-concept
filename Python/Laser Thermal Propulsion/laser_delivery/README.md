@@ -101,3 +101,91 @@ Elasticities (d ln P / d ln x) are mathematical. Ranges in `uncertainty.ILLUSTRA
 Obtain real datasheets (mirror, expander, window); define M^2 and pointing statistics from the source study;
 add transmitter-side aperture clipping and jitter/point-ahead if needed; consider a non-Gaussian profile
 (e.g. flat-top) sensitivity study; add medium attenuation only if an atmosphere is introduced.
+
+
+---
+
+# PART II -- LSP SUBSYSTEM AND INTEGRATION (added after the laser-delivery subsystem)
+
+The laser-delivery subsystem above is unchanged. A reconstructed **1-D axial, steady-state, LTE argon laser-sustained plasma (LSP)**
+subsystem lives in the `lsp/` package and is coupled to the delivery budget through a single module, `lsp/integration.py`.
+The project ends at the LSP outlet state: no nozzle, thrust, specific-impulse or trajectory calculation exists.
+
+Full stage-by-stage reporting (audit of the original code, reconstruction plan, verification, integration, open items) is in
+**`lsp/docs/STAGE_REPORTS.txt`**; the generated verification list is in `lsp/docs/VALIDATION_REPORT.txt`.
+
+## Run
+```
+python main_integrated.py                 # delivery -> LSP with the legacy (unsourced, illustrative) operating inputs
+python main_integrated.py --demo-ignited  # EXPLORATORY operating point with an ignited branch (R=0.5 mm, 10 MPa, 1 mg/s)
+python main_integrated.py --scan          # exploratory (R, p, mdot) scan at the delivered power
+python main_integrated.py --set aperture_radius_m=10     # change a DELIVERY input and watch the LSP input follow
+python -m lsp.main_lsp --power-w 3000 --wavelength-m 10.6e-6   # LSP alone (no default laser power exists)
+python main.py                            # delivery alone (unchanged)
+python -m unittest discover -s tests -t . # 106 tests (52 delivery + 54 LSP/integration)
+```
+
+## Integrated architecture
+```
+ +---------------------------- LASER DELIVERY (project root, unchanged) ----------------------------+
+ | config.SystemInputs -> beam_propagation -> pointing_error -> receiver -> optical_components ->   |
+ |   optical_losses -> power_budget.compute_budget() -> PowerBudget                                 |
+ |      .delivered_w [W]  .inputs.wavelength_m [m]  .inputs.m2  .inputs.duty_cycle  .stages[...]    |
+ +--------------------------------------------+-----------------------------------------------------+
+                                              |  lsp/integration.py : laser_input_from_budget()
+                                              |  LaserInput(power_w = delivered_w, wavelength_m, m2, source, power_basis)
+ +--------------------------------------------v-----------------------------------------------------+
+ | LSP SUBSYSTEM (lsp/)                                                                             |
+ | config (LSPConfig, provenance) -> physics { argon_thermo (Saha, enthalpy) , absorption (IB),     |
+ |   radiation (brems), transport (k), tables (splines), closures } -> energy (FV residual +        |
+ |   Jacobian + power balance) -> solver (residual-based PTC / damped Newton) -> run (branches,     |
+ |   accounting, warnings, hand-off state) -> report / plots / validation                           |
+ +--------------------------------------------+-----------------------------------------------------+
+                                              v
+        LSPOutput: mdot, p, T_out, h_out, h_in, gas enthalpy-flux increase, ionisation fraction  (hand-off only)
+```
+Separation of physics: the delivery subsystem decides how much power enters the chamber; the LSP decides how much of it the plasma
+absorbs (`absorbed + residual beam = delivered`). The LSP applies no further optical transmission factor, so optical losses are never
+counted twice, and delivered power is never assumed to be absorbed.
+
+## Governing equations (SI)
+* Energy: `(mdot/A) dh/dx = d/dx(k dT/dx) + q_laser - q_rad - q_wall`, with `h(T,p)` including ionisation and electron enthalpy.
+* Saha (LTE): `n_e n_{z+1}/n_z = 2 (g_{z+1}/g_z)(2 pi m_e k T/h^2)^{3/2} exp(-E_z/kT)`, `n_e = n_1 + 2 n_2`, `p = (n_heavy + n_e) kT`.
+* Beam: `dI/dx = -alpha I`, `q_laser = alpha I` (exact per-cell exponential, discretely conservative).
+* Inverse bremsstrahlung (electron-ion): `alpha = C_ff g_ff (n_1 + 4 n_2) n_e T^{-1/2} nu^{-3} (1 - exp(-h nu/kT))`.
+* Brems: `q_rad = C_br g_B (n_1 + 4 n_2) n_e T^{1/2}`.
+* Radial loss (closure): `q_wall = 4 S(T)/R^2`, `S = int_{Tw}^{T} k dT'` (adiabatic and legacy-tuned options available).
+Derivations, limits and units: module docstrings (`lsp/argon_thermo.py`, `absorption.py`, `radiation.py`, `transport.py`, `energy.py`, `physics.py`).
+
+## Parameter register
+Every LSP input carries a provenance class (`lsp/config.py`, `lsp/references.py`, exported to `outputs/.../lsp_parameter_register.csv`
+and `lsp_references.csv`): `FROM_LASER_DELIVERY` (power, wavelength, M^2), `ORIGINAL_MODEL_DEFAULT` (pressure, mass flow, radius,
+length, inlet and wall temperatures: **unsourced, illustrative, adjustable**), `MODELLING_ASSUMPTION`, `NUMERICAL_SETTING`, `UNRESOLVED`.
+No plasma operating condition was invented. The delivered 3.63 kW is a **peak-power** reference value (CW power/duty cycle unresolved).
+
+## Verification status (what has and has not been shown)
+* Verified numerically/analytically: Saha closure; SI constants vs the legacy cgs constants; dimensional consistency; analytic Jacobian;
+  analytic convection-diffusion solution (first-order convergence observed); exact discrete beam and plasma energy balances; residual-based
+  convergence; grid refinement; bistability (hot/cold branches); input rejection; the legacy-code audit facts; interface tests.
+* Checked against literature: only spot checks (argon viscosity and conductivity at 300 K) plus qualitative trends (ignition at ~1 um needs MPa-level
+  pressure; temperatures and absorption of the same order as reported Shizuoka experiments). **No experimental validation is claimed.**
+
+## Key findings about the original LSP model (details in STAGE_REPORTS.txt)
+Its "converged" state is not a steady solution (relative residual 0.94, 32 % energy imbalance) and extinguishes when marched in time; frozen cp
+omitted an ionisation-enthalpy flux (1.8 kW) larger than the absorbed power (1.15 kW); its wall loss was two tuned coefficients; it used a
+10.6 um laser whereas the delivery model is 1.064 um (absorbs ~136x less at the same state).
+
+## Known limitations (LSP)
+1. 1-D collimated top-hat beam: no focusing, no radial structure. Jeng & Keefer (1987) note 1-D models are inherently limited; the ignited plasma here
+   attaches to the inlet boundary. Comparison with experiments needs a 2-D focused-beam model.
+2. LTE single temperature, ground-term partition functions, no ionisation-potential lowering.
+3. Absorption is electron-ion only; electron-neutral IB (important at low ionisation, hence ignition) is unresolved; Gaunt factor assumed 1.
+   Ignition flips between Gaunt factors 0.5 and 2 at the demo point: treat absorption as order-unity uncertain.
+4. Radiation is optically thin bremsstrahlung only; line and recombination radiation omitted (loss underestimated).
+5. Thermal conductivity lacks reactive and electron contributions (underestimated) and uses an extrapolated collision-integral fit above ~9,300 K.
+   Results are sensitive to this (conductivity x10 extinguishes the demo plasma). Plug in a sourced table via `TabulatedConductivity`.
+6. First-order upwind convection; Tpeak (a thin-front quantity) converges more slowly than integrated powers.
+7. The ignited branch has a narrow basin of attraction; branch selection depends on the initial state (reported, not hidden).
+8. Operating inputs are illustrative; at the legacy operating point (1 bar, 50 mg/s, 2 mm) the model has no ignited steady state at 1.064 um.
+9. Exploratory ignited states occur at 0.5 mm radius, >= 3 MPa and <= 1 mg/s and convert essentially none of the absorbed power into gas enthalpy:
+   no efficiency or propulsion-performance claim is supported.

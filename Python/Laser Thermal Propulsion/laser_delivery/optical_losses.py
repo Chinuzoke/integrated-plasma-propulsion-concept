@@ -6,8 +6,8 @@ Each component receives the ACTUAL output power of the preceding component
 """
 from __future__ import annotations
 
-from config import SystemInputs
-from optical_components import FresnelWindow, LumpedComponent, StageResult
+from .config import SystemInputs
+from .optical_components import FresnelWindow, LumpedComponent, StageResult
 
 
 class PowerBalanceError(AssertionError):
@@ -16,18 +16,20 @@ class PowerBalanceError(AssertionError):
 
 def assert_conserved(stage: StageResult, rtol: float = 1e-12) -> None:
     if abs(stage.residual) > rtol * stage.p_in:
-        raise PowerBalanceError(f"{stage.name}: energy not conserved, residual {stage.residual:.3e} W")
+        raise PowerBalanceError(
+            f"{stage.name}: energy not conserved, residual {stage.residual:.3e} W")
     if stage.p_out < 0 or stage.total_loss < -1e-12 * stage.p_in or stage.p_out > stage.p_in * (1 + 1e-12):
         raise PowerBalanceError(f"{stage.name}: non-physical power channel")
 
 
 def build_train(inp: SystemInputs) -> list:
     """Mirror -> beam-conditioning assembly -> window (representative catalogue components, register v1)."""
-    import config as cfg
+    from . import config as cfg
     ppm = inp.mirror_abs_scatter_ppm
     mirror_known = {}
     if ppm is not None:
-        mirror_known = {"absorption + scattering COMBINED (typical measured, upper bound)": ppm * 1e-6}
+        mirror_known = {
+            "absorption + scattering COMBINED (typical measured, upper bound)": ppm * 1e-6}
         m_basis = "typical measured reflectance + combined abs+scatter (PROVISIONAL manufacturer measurement)"
         m_unres = "remainder (1 - R - combined abs+scatter), e.g. transmission through coating/substrate: unattributed"
     else:

@@ -4,6 +4,14 @@ references.py -- traceable parameter/source register (register v1).
 Values, units, classifications and notes are read from config.PARAMS so the
 register cannot drift from the model inputs; this file adds only the SOURCES.
 tests/test_register.py enforces that every config parameter has a record.
+
+Provenance caveats (stated plainly):
+* The classifications and source attributions below come from the user's
+  "Verified and Classified Reference Parameter Register". The URLs were
+  supplied there; the assistant that built this code did NOT independently
+  re-fetch the datasheets or the MacRobbie et al. paper.
+* Only Malitson (1965) was independently looked up (existence and DOI).
+* Siegman and ISO 11146-1 are cited from recall.
 """
 from __future__ import annotations
 
@@ -13,7 +21,7 @@ from dataclasses import dataclass, asdict
 import config as cfg
 
 _MACROBBIE = ("Space-Based Solar Power: Implications for Operational Robustness in Lunar EVAs and Exploration "
-              "Architectures", "MacRobbie et al.", "2025", "(journal: Aerotecnica Missili & Spazio)")
+              "Architectures", "MacRobbie et al.", "2025", "not recorded (journal: Aerotecnica Missili & Spazio)")
 _MIRROR = ("Excelitas/LINOS DLHS NIR 1064 nm dielectric-coated plane mirror (product page + datasheet)",
            "Excelitas / LINOS", "n/a",
            "https://prod.excelitas.com/product/dielectric-coated-plane-mirrors-dlhs-nir-1064-nm ; "
@@ -23,8 +31,7 @@ _EXPANDER = ("EKSMA Optics 160-0081 compact 8x Galilean beam expander (product p
              "https://eksmaoptics.com/out/media/EKSMA_Optics_Zoom_Beam_Expander.pdf")
 _WINDOW = ("Shimadzu laser windows for 1064 nm (product page)", "Shimadzu", "n/a",
            "https://www.shimadzu.com/opt/products/highpower/o-k25cur0000007rp3.html")
-_NONE_ASSUMED = ("none: modelling choice / scenario input",
-                 "this model", "n/a", "n/a")
+_NONE_ASSUMED = ("none: modelling choice / scenario input", "this model", "n/a", "n/a")
 _NONE_UNRES = ("none: unresolved", "n/a", "n/a", "n/a")
 _NONE_UNVER = ("none established", "n/a", "n/a", "n/a")
 _DERIVED = ("derived from conventional two-lens Galilean architecture (not a manufacturer prescription)",
@@ -55,10 +62,10 @@ SUPPORTING = [
      "I. H. Malitson", "1965", "https://doi.org/10.1364/josa.55.001205",
      "Paper and DOI verified by lookup. Sellmeier coefficients taken from the PyXOpto implementation "
      "(secondary source): confirm against the paper. Used only for the uncoated-window comparison case."),
-    ("gaussian_beam_M2_formalism", "Lasers",
-     "A. E. Siegman", "1986", "ISBN 0-935702-11-5"),
+    ("gaussian_beam_M2_formalism", "Lasers", "A. E. Siegman", "1986", "ISBN 0-935702-11-5",
+     "Cited from recall, not re-verified."),
     ("beam_width_and_M2_definitions", "ISO 11146-1 (laser beam widths, divergence angles, beam propagation ratios, Part 1)",
-     "ISO", "2005", "not recorded", "Title verified."),
+     "ISO", "2005", "not recorded", "Title recalled, not re-verified."),
 ]
 
 
