@@ -52,9 +52,7 @@ Derived: lens back focal distance 122.13 mm and curvature radius 62.5 mm from th
 ## Components
 Material entries are candidates only; no numerical material property is used anywhere in this package, so no property source applies yet and datasheets must be selected before analysis. Surface finish, thread and tolerance values are not assigned except where stated; fits and GD&T are to be set with the mechanical analysis (datum A = beam axis; faces perpendicular to A). Inspection: dimensional check of critical features, leak test and optical inspection after assembly (to be specified).
 
-## TBC = To be completed
-
-### main_chamber_body (TBC)
+### main_chamber_body 
 - Function: Holds the plenum bore, gas manifold, ports and the nozzle housing; carries pressure loads.
 - Geometry and dimensions: L 90, OD 50, bore D18 (pub), pocket D26, bore D10 at nozzle, cooling relief OD 46 (all proposed except D18)
 - Material recommendation: 316L-class stainless steel or a copper alloy where heat flux demands; selection pending thermal analysis
@@ -118,7 +116,7 @@ Material entries are candidates only; no numerical material property is used any
 - Critical dimensions and datums: parallelism to the window
 - Unresolved: contact stress on the glass unresolved
 
-### focusing_lens (TBC)
+### focusing_lens 
 - Function: Focuses the collimated 10 mm beam onto the LSP (F12.5 baseline).
 - Geometry and dimensions: D25.4 (pub, 1 inch), EFL 125 (pub), R = 62.5 and centre thickness 4.30 derived from an assumed n = 1.5, edge 3.0 (proposed)
 - Material recommendation: fused silica or similar with 1080 nm coating (lens glass not published)
@@ -134,7 +132,7 @@ Material entries are candidates only; no numerical material property is used any
 - Critical dimensions and datums: bore coaxial with A
 - Unresolved: lens retention ring is not defined
 
-### optical_alignment_mount (TBC)
+### optical_alignment_mount 
 - Function: Clamp ring on a post and base for lens/laser-head alignment.
 - Geometry and dimensions: ring OD 48, post D14, base 70 x 70 x 8 (proposed)
 - Material recommendation: aluminium
