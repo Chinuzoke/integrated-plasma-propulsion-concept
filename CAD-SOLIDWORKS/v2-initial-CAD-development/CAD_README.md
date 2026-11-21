@@ -7,10 +7,10 @@ Axes: These are yet to be defined.
 ## Folder structure
 ```
 CAD-Solidworks/v2-initial-CAD-development/components/<part>_{front}.SLDPRT   (20 parts) 
-CAD-Solidworks/v2-initial-CAD-development/Assembly/(To be added)
+CAD-Solidworks/v2-initial-CAD-development/Assembly/<part>_{views}.jpg (8 views)
 CAD-Solidworks/v2-initial-CAD-development/Drawings/(To be added)
 CAD-Solidworks/v2-initial-CAD-development/Renders/(To be added)
-CAD-Solidworks/v2-initial-CAD-development/Views/(To be added)
+CAD-Solidworks/v2-initial-CAD-development/CAD_README.md 
 ```
 
 
@@ -117,7 +117,7 @@ Material entries are candidates only; no numerical material property is used any
 - Unresolved: contact stress on the glass unresolved
 
 ### focusing_lens 
-- Function: Focuses the collimated 10 mm beam onto the LSP (F12.5 baseline).
+- Function: Focuses the collimated 10 mm beam onto the LSP.
 - Geometry and dimensions: D25.4 (pub, 1 inch), EFL 125 (pub), R = 62.5 and centre thickness 4.30 derived from an assumed n = 1.5, edge 3.0 (proposed)
 - Material recommendation: fused silica or similar with 1080 nm coating (lens glass not published)
 - Manufacturing: purchased optic
@@ -142,7 +142,7 @@ Material entries are candidates only; no numerical material property is used any
 
 ### beam_axis_reference
 - Function: Virtual datum line of the laser beam axis (not a physical part).
-- Geometry and dimensions: length 170, D0.7 display only
+- Geometry and dimensions: length 100, D0.7 display only
 - Material recommendation: none
 - Manufacturing: none
 - Critical dimensions and datums: datum A
@@ -229,8 +229,8 @@ Material entries are candidates only; no numerical material property is used any
 - Unresolved: preload and torque not calculated
 
 ## Assembly sequence (proposed yet-to-be-done)
-1. Fit seat ring, seal, window and retaining ring (torque-limited) into the body pocket.
-2. Insert the sustaining insert; check the shoulder contact at z = -1.
+1. Insert the sustaining insert; check the shoulder contact z = 1.
+2. Fit seat ring, seal, laser window and retaining ring (torque-limited) into the body pocket.
 3. Fit the copper throat insert, then the nozzle retainer.
 4. Fit electrode insulators and electrodes; set the tip gap.
 5. Fit the cooling jacket and fittings; fit gas, pressure and diagnostic ports.
