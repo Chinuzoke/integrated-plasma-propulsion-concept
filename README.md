@@ -40,58 +40,6 @@ The following diagram illustrates the intended architecture of the integrated pr
 
 The individual models are developed and verified progressively, with subsystem coupling introduced as their governing equations, inputs and outputs are established.
 
-flowchart TD
-    A["Operating Conditions<br/>Laser Power • Propellant • Geometry"] 
-
-    subgraph PY["PYTHON — Computational Plasma and Laser Models"]
-        B["Laser Delivery Model"]
-        C["Optical Losses and Captured Laser Power"]
-        D["Laser-Sustained Plasma (LSP) Model"]
-        E["Plasma State<br/>Temperature • Density • Ionization<br/>Energy Deposition"]
-
-        B --> C
-        C -->|"Captured laser power"| D
-        D --> E
-    end
-
-    subgraph CAD["SOLIDWORKS — Thruster Engineering Design"]
-        F["3D Thruster Geometry"]
-        G["Component Arrangement<br/>Chamber • Nozzle • Optical Access"]
-        F --> G
-    end
-
-    subgraph ANSYS["ANSYS — Multiphysics Engineering Analysis"]
-        H["Geometry and Computational Mesh"]
-        I["Thermal / Fluid Analysis"]
-        J["Engineering Field Results"]
-        H --> I --> J
-    end
-
-    subgraph MATLAB["MATLAB — Propulsion Performance"]
-        K["Propulsion Performance Model"]
-        L["Thrust • Specific Impulse<br/>Mass Flow • Efficiency"]
-        K --> L
-    end
-
-    subgraph SIM["SIMULINK — System-Level Modelling"]
-        M["Integrated System Model"]
-        N["Operating Conditions and<br/>System Response"]
-        M --> N
-    end
-
-    A --> B
-    G --> H
-    E --> I
-    E --> K
-    J --> K
-    L --> M
-    N -.->|"Operating-condition updates"| A
-
-    V["Literature and Experimental Data<br/>Verification • Validation • Model Refinement"]
-    E -.-> V
-    J -.-> V
-    L -.-> V
-
 
 ## 5. Repository Structure
 
